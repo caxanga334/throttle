@@ -59,7 +59,11 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
 
 $app['redis'] = $app->share(function() use ($app) {
     $redis = new \Redis();
-    $redis->connect($app['config']['redis.host'], 6379, 1);
+
+    if ($redis->connect($app['config']['redis.host'], 6379, 2.5) == FALSE) {
+        error_log("Throttle failed to connect to Redis server!");
+    }
+
     return $redis;
 });
 
